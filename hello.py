@@ -1,17 +1,16 @@
 # first, install python
 # then, install flask using pip install Flask
-# install watchdog with pip install watchdog [failed on win10]
+# install watchdog with pip install watchdog [failed on win10] (why?)
 # create this file, run python thisfile.py, starts a server on :1337
-# fetch bootstrap http://getbootstrap.com/getting-started/#download
-#
+# http://www.wtfpl.net/about/
 import sqlite3, os
 from flask import g
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort, redirect, url_for
 from datetime import datetime
+from random import randint
 #from flask import render_template
 # For logging
 import logging
-from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 
@@ -23,6 +22,10 @@ app.config.update(dict(
     USERNAME='admin',
     PASSWORD='default'
 ))
+
+logging.basicConfig(filename='example.log', filemode='w', level=logging.INFO)
+#handler.setLevel(logging.INFO)
+#app.logger.addHandler(handler)
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
@@ -73,7 +76,7 @@ def showDefault():
 @app.route('/refreshdb')
 def refreshDB():
     init_db()
-    return 'Init complete'
+    return render_template('base.html', performed='init_db()')
 
 @app.route('/user/')
 @app.route('/user/<string:username>')
@@ -86,34 +89,72 @@ def show_greeting(username):
 @app.route('/system/register/<system>/<percentage>/<meta>')
 def register_health(system, percentage, meta = None):
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    if percentage == 'random':
+        percentage = randint(0,100)
     args = [now,system,percentage]
     res = insert_db("insert into healthstatus ('when', 'system', 'status') values (?, ?, ?)", args)
-    return render_template('base.html', performed='register_health()', data = args)
+    #return render_template('base.html', performed='register_health()', data = args)
+    return redirect('/system/list')
 
 @app.route('/system/view/<system>/')
-def display_system(system):
+@app.route('/system/view/<system>/<modifier>')
+def display_system(system, modifier = False):
     app.logger.info('display_system: %s', system)
-    systemHealthPoints = getSystemHealth(system)
-    return render_template('systemViewSingle.html', healthData=systemHealthPoints)
+    systemHealthPoints = getSystemHealth(system, modifier)
+    return render_template('systemViewSingle.html', healthData=systemHealthPoints, system=system)
 
-def getSystemHealth(system):
+def getSystemHealth(system,modifier = None):
     system = [system]
-    app.logger.info('getSystemHealth: %s', system)
-    systemHealthPoints = query_db('select "when","status","who","meta" from healthstatus where "system"=?', system)
-    app.logger.info('getSystemHealth: %s', str(systemHealthPoints))
+    #logging.info('getSystemHealth: %s %s', system, modifier)
+    #sql = 'SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=?'
+    # Standard display is today
+    sql = 'SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=? AND "when" BETWEEN datetime(\'now\', \'start of day\') AND datetime(\'now\', \'localtime\')'
+    if modifier == 'all':
+        sql = 'SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=?'
+    elif modifier == 'week':
+        sql = 'SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=? AND "when" BETWEEN datetime(\'now\', \'-6 days\') AND datetime(\'now\', \'localtime\')'
+    elif modifier == 'month':
+        sql = 'SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=? AND "when" BETWEEN datetime(\'now\', \'start of month\') AND datetime(\'now\', \'localtime\')'
+    systemHealthPoints = query_db(sql, system)
+    logging.info('getSystemHealth: %s', str(systemHealthPoints))
     return systemHealthPoints
+
+def getSystemHealthTodayOnly(system):
+        #system = [system
+        app.logger.info('getSystemHealthTodayOnly: %s %s', system)
+        args = [system]
+        systemHealthPoints = query_db('SELECT "when","status","who","meta" FROM healthstatus WHERE "system"=? AND "when" BETWEEN datetime(\'now\', \'start of day\') AND datetime(\'now\', \'localtime\')', args)
+        app.logger.info('getSystemHealth: %s', str(systemHealthPoints))
+        return systemHealthPoints
 
 @app.route('/system/list')
 def list_systems():
     systems = query_db('select distinct system,count(*) from healthstatus group by system')
-    return render_template('systemlist.html', systems = systems)
+    #systemAdded[0] = None
+    i = 0
+    logging.info('list_systems_result: %s', str(systems[0][0]))
+    for system in systems:
+        latestSystemData = (getSystemHealth(str(system[0])))
+        newSystem = (system[0],system[1],latestSystemData)
+        systems[i] = newSystem
+        i = i + 1
+        #systemLatest = list(getSystemHealth(system[0]))
+        #systems[3] = systemLatest
+        #i = i + 1
+        #systemAddedInfo =
+    #    thisSystemHealth = getSystemHealth(systems)
+    #    systems[i][3] = 'moo'
+    #    app.logger.info('list_systems_loop: %s', str(systems[i]))
+    #    #systems[i].append("moooo")
+    #    i += 1
+    logging.info('list_systems_result2: %s', str(systems))
+
+
+    return render_template('systemList.html', systems = systems)
         #print ("system['system']")
 
 if __name__ == '__main__':
     # internal only (turn off debug mode before running anything else)
     #app.run()
     #app.debug = True # enable debug mode to make server reload on code changes.
-    handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
     app.run(host='0.0.0.0',port=1337,debug = True)

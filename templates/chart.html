@@ -1,0 +1,42 @@
+<div class="ct-chart-line" id="System{{system[0]}}Chart" class="ct-chart">
+</div>
+  <script>
+    var thislabel = [];
+    var thisseries = [];
+    // fetch data from pytojson
+    var allData = {{healthData|tojson}};
+    for (dataPoint of allData){
+      // label is date
+      thislabel.push(dataPoint[0]);
+      // meta = date, value = percentage
+      thisseries.push({meta: dataPoint[0], value: dataPoint[1]});
+    }
+
+    var options = {
+      //scaleMinSpace: 10,
+      referenceValue: 50,
+      showArea: true,
+      axisX: {
+        labelInterpolationFnc: function skipLabels(value, index) {
+          return index % 2  === 0 ? value : null;
+        }
+      },
+      axisY: {
+        onlyInteger: true,
+        high: 100,
+        low: 0
+      },
+      plugins: [
+        Chartist.plugins.ctThreshold({
+          threshold: 70
+        }),
+        Chartist.plugins.tooltip()
+      ]
+    };
+    // Initialize a Line chart in the container with the ID chart1
+    var chart{{system[0]}} = new Chartist.Line('#System{{system[0]}}Chart', {
+      labels: thislabel,
+      series: [thisseries]
+    }, options );
+  </script>
+</div>

@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 {% block head %}
+<link rel="stylesheet" href="/static/chartist.min.css">
+<link rel="stylesheet" href="/static/chartist-plugin-threshold.css">
+<link rel="stylesheet" href="/static/chartist-plugin-tooltip.css">
+
 {% endblock %}
 {% block middleArea %}
+<script src="/static/chartist.min.js"></script>
+<script src="/static/chartist-plugin-threshold.js"></script>
+<script src="/static/chartist-plugin-tooltip.js"></script>
+
+{% if healthData %}
+<p>The following chart displays the latest health data for the {{system}} service.</p>
+<p>See other resolutions:</p>
 <ul>
-  {{healthData}}
-  {% for data in healthData %}
-    <li>{{ data.when }}</li>
-  {% endfor %}
+  <li><a href="/system/view/{{system}}/all">all</a></li>
+  <li><a href="/system/view/{{system}}/week">week</a></li>
+  <li><a href="/system/view/{{system}}/month">month</a></li>
 </ul>
+<div class="c90">
+{% include 'chart.html' %}
+</div>
+{% endif %}
+
+<p> Going to use this for chartist.js docs</p>
+<table>
+  {% for data in healthData %}
+    <tr>
+      <td>{{ data[0] }}</td>
+      <td>{{data [1]}}</td>
+    </tr>
+  {% endfor %}
+</table>
+
 {% endblock %}

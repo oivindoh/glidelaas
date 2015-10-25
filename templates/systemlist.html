@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 {% block head %}
+<link rel="stylesheet" href="/static/chartist.min.css">
+<link rel="stylesheet" href="/static/chartist-plugin-threshold.css">
+<link rel="stylesheet" href="/static/chartist-plugin-tooltip.css">
 {% endblock %}
 {% block middleArea %}
-<ul>
+<script src="/static/chartist.js"></script>
+<script src="/static/chartist-plugin-threshold.js"></script>
+<script src="/static/chartist-plugin-tooltip.js"></script>
   {% for system in systems %}
-    <li>{{system}}</li>
+   <div class="dashChart">
+     <h3>{{system[0]}} <small>status</small></h3>
+     {% set healthData = system[2] %}
+     {% include 'chart.html' %}
+  </div><!-- end column with chart div -->
   {% endfor %}
-</ul>
 {% endblock %}
