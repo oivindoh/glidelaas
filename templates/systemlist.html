@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block middleArea %}
+<ul>
+  {% for system in systems %}
+    <li>{{system}}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
