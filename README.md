@@ -5,6 +5,8 @@ Supposed to become a sort of dashboard for some secret sauce projects. Named aft
 
 Uses Flask framework, because Django induced severe headaches. Coded while being under constant barrages of 'DADDY LOOK! DADDY LOOK!'. Just wait until I get my revenge by forcing the little ones to learn python. Just wait...
 
+Chartist.js for charts. For now.
+
 Includes a super secret key that's as yet unused, along with terrible python-learner coding! Visible to everyone!
 
 ## TODO:
