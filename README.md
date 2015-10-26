@@ -1,5 +1,7 @@
 # glidelaas
-Includes a super secret key and terrible python-learner coding! Visible to everyone!
+First python project, while attempting to learn by doing (and mostly failing). Because actually reading documentation properly would be truly wrong.
+
+Includes a super secret key that's as yet unused, along with terrible python-learner coding! Visible to everyone!
 
 ## TODO:
 * Transition (again...) from SQLAlchemy to Flask-SQLAlchemy
