@@ -11,7 +11,7 @@
 <script src="/static/chartist-plugin-tooltip.js"></script>
 
 {% if healthData %}
-<p>The following chart displays the latest health data for the {{system}} service.</p>
+<p>The following chart displays the latest health data for the {{system['systemname']}} service.</p>
 <p>See other resolutions:</p>
 <ul>
   <li><a href="/system/view/{{system}}/all">all</a></li>
@@ -20,17 +20,16 @@
 </ul>
 <div class="c90">
 {% include 'chart.html' %}
+sd
 </div>
+{% else %}
+<p>No data received for {{system['systemname']}} service today.</p>
+<p>Try other resolutions:</p>
+<ul>
+  <li><a href="/system/view/{{system}}/all">all</a></li>
+  <li><a href="/system/view/{{system}}/week">week</a></li>
+  <li><a href="/system/view/{{system}}/month">month</a></li>
+</ul>
 {% endif %}
-
-<p> Going to use this for chartist.js docs</p>
-<table>
-  {% for data in healthData %}
-    <tr>
-      <td>{{ data[0] }}</td>
-      <td>{{data [1]}}</td>
-    </tr>
-  {% endfor %}
-</table>
 
 {% endblock %}

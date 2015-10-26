@@ -29,28 +29,21 @@
       </div>
       <div class="clear-space"></div>
       <div id="middleArea" class="content">
-        <div class="grid">
-          <div id="crumbs" class="row">
+
+          <div id="crumbs" class="row">asds
           {% if performed %}
             <p>{{performed}}({{data}})</p>
             <script lang="text/javascript">var arr = {{data|tojson}}; console.log(arr);</script>
           {% endif %}
-          <!--
-        {% if name %}
-          <h1>Hello {{name}}</h1>
-        {%else%}
-          <h1>Who the hell are you?</h1>
-        {% endif %}
-        {% if performed %}
-          <p>{{performed}}({{data}})</p>
-          <script lang="text/javascript">var arr = {{data|tojson}}; console.log(arr);</script>
-        {% endif %}-->
         </div>
-          <div class="row">
+        <div class="grid">
+          <!-- start middleArea template block -->
       {% block middleArea %}
 
+
+
       {% endblock %}
-          </div>
+          <!-- end middleArea template block -->
         </div>
       </div>
     </body>

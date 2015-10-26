@@ -5,14 +5,24 @@
 <link rel="stylesheet" href="/static/chartist-plugin-tooltip.css">
 {% endblock %}
 {% block middleArea %}
-<script src="/static/chartist.js"></script>
-<script src="/static/chartist-plugin-threshold.js"></script>
-<script src="/static/chartist-plugin-tooltip.js"></script>
-  {% for system in systems %}
-   <div class="dashChart">
-     <h3>{{system[0]}} <small>status</small></h3>
-     {% set healthData = system[2] %}
-     {% include 'chart.html' %}
-  </div><!-- end column with chart div -->
-  {% endfor %}
+            <script src="/static/chartist.js"></script>
+            <script src="/static/chartist-plugin-threshold.js"></script>
+            <script src="/static/chartist-plugin-tooltip.js"></script>
+
+            <div class="dashChartContainer">
+              {% for key,value in systems.items() %}
+              <!-- start column with single chart div -->
+              <div class="dashChart">
+                <h3>{{key}} <small>status</small></h3>
+                {% set healthData = value['healthdata'] %}
+                {% set system = value %}
+                {% include 'chart.html' %}
+              </div>
+              <!-- end column with chart div -->
+              {% endfor %}
+            </div>
+            <div class="clear-space"></div>
+            <div>
+              <p>TODO: Combined chart</p>
+            </div>
 {% endblock %}

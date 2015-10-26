@@ -1,15 +1,14 @@
-<div class="ct-chart-line" id="System{{system[0]}}Chart" class="ct-chart">
-</div>
+<div id="System{{system['systemname']}}Chart" class="ct-chart"></div>
   <script>
     var thislabel = [];
     var thisseries = [];
-    // fetch data from pytojson
-    var allData = {{healthData|tojson}};
-    for (dataPoint of allData){
-      // label is date
-      thislabel.push(dataPoint[0]);
-      // meta = date, value = percentage
-      thisseries.push({meta: dataPoint[0], value: dataPoint[1]});
+
+    var health = {{healthData|tojson}}
+    for (var key in health) {
+      var value = health[key];
+      thislabel.push(key);
+      thisseries.push({meta: key+' ('+value['who']+')', value: value['status']});
+      console.log(key+' ('+value['who']+')',value['status']);
     }
 
     var options = {
@@ -28,15 +27,15 @@
       },
       plugins: [
         Chartist.plugins.ctThreshold({
-          threshold: 70
+          threshold: {{system['threshold']}}
         }),
         Chartist.plugins.tooltip()
       ]
     };
     // Initialize a Line chart in the container with the ID chart1
-    var chart{{system[0]}} = new Chartist.Line('#System{{system[0]}}Chart', {
+    var chart{{system['systemname']}} = new Chartist.Line('#System{{system['systemname']}}Chart', {
       labels: thislabel,
       series: [thisseries]
+      //series: [thisseries,[30,40,50,60,30,20]]
     }, options );
   </script>
-</div>
