@@ -1,6 +1,8 @@
 # glidelaas
 First python project, while attempting to learn by doing (and mostly failing). Because actually reading documentation properly would be truly wrong.
 
+Uses Flask framework, because Django induced severe headaches. Coded while being under constant barrages of 'DADDY LOOK! DADDY LOOK!'. Just wait until I get my revenge by forcing the little ones to learn python. Just wait...
+
 Includes a super secret key that's as yet unused, along with terrible python-learner coding! Visible to everyone!
 
 ## TODO:
