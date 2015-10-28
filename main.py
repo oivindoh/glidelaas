@@ -3,6 +3,7 @@
 # install watchdog with pip install watchdog [failed on win10] (why?)
 # pip install flask-debugtoolbar
 # pip install flask-sqlalchemy
+# pip install flask-restful
 # create this file, run python thisfile.py, starts a server on :1337
 # http://www.wtfpl.net/about/
 import os
@@ -11,6 +12,7 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 from flask.ext.sqlalchemy import SQLAlchemy # needed?
 from datetime import datetime, timedelta
 from random import randint
+from glidelaasapi import glidelaasapi
 
 # For logging
 import logging
@@ -18,6 +20,7 @@ from logging.handlers import TimedRotatingFileHandler
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
+app.register_blueprint(glidelaasapi)
 
 # config section (move to config file later)
 app.config.update(dict(
@@ -91,7 +94,7 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-@app.teardown_appcontext
+#@app.teardown_appcontext
 #def close_connection(exception):
     #db = getattr(g, '_database', None)
     #if db is not None:

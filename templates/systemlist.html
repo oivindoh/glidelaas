@@ -13,7 +13,7 @@
               {% for key,value in systems.items() %}
               <!-- start column with single chart div -->
               <div class="dashChart">
-                <h3>{{key}} <small>status</small></h3>
+                <h3>{{key}} <small>status (threshold {{value['threshold']}})</small></h3>
                 {% set healthData = value['healthdata'] %}
                 {% set system = value %}
                 {% include 'chart.html' %}
