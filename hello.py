@@ -21,11 +21,13 @@ app = Flask(__name__)
 
 # config section (move to config file later)
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'db\sqlite.db'),
+    DATABASE=os.path.join(app.root_path, 'db', 'sqlite.db'),
     DEBUG=True,
     SECRET_KEY='totallysecretkeyImgoingtouploadtogithub',
     USERNAME='admin',
-    PASSWORD='default'
+    PASSWORD='default',
+    # Set to True to intercept redirects for debugging purposes..
+    DEBUG_TB_INTERCEPT_REDIRECTS=False
 ))
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -82,6 +84,7 @@ def runTestQuery(table):
     return True
 
 def init_db():
+    # TODO: Update to sqlalchemy
     with app.app_context():
         db = get_db()
         with app.open_resource('db\schema.sql', mode='r') as f:
